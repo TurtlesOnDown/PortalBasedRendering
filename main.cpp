@@ -41,7 +41,7 @@ int main()
   GLFWwindow* window = openGLinit();
 
     // Build and compile our shader program
-    Shader ourShader("default.vs", "default.frag");
+    Shader ourShader("Shader/default.vs", "Shader/default.frag");
 
     Vertex one{ {-.25,.25,0} };
 
@@ -56,7 +56,7 @@ int main()
 
     GLuint texture = newTexture("container.jpg");
 
-    Texture testTexture{ {texture} };
+    Texture testTexture{texture};
     Transformation testTransform1{ {0,0,10},{50, 50, 50} };
     Transformation testTransform2{ { 0,20,0 },{ 50, 50, 50 } };
 
