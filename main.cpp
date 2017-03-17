@@ -13,6 +13,7 @@
 #include "RenderStructure.h"
 #include "Camera.h"
 
+#include "GeometryLoader.h"
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -37,7 +38,9 @@ GLfloat lastFrame = 0.0f;
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
-    
+
+  GeometryLoader::test();
+  
   GLFWwindow* window = openGLinit();
 
     // Build and compile our shader program
