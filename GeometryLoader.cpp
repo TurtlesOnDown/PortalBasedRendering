@@ -7,8 +7,9 @@
 using namespace std;
 using namespace picojson;
 
-void GeometryLoader::test() {
-  value v;
+GeometryLoader::GeometryLoader() {}
+
+bool GeometryLoader::loadFromFile(string path) {
   string json = "";
   string line;
   ifstream testfile("sectors.json");
@@ -17,28 +18,55 @@ void GeometryLoader::test() {
       json += line + "\n";
     }
     testfile.close();
+    return loadFromString(json);
   } else {
-    cout << "oh shit it broke" << endl;
-    return;
+    lasterror = string() + "failed to open file \"" + path + "\"";
+    return false;
   }
+}
 
-  cout << "-----json begin-----\n"
-       << json
-       << "\n------json end------" << endl;
-
+bool GeometryLoader::loadFromString(string json) {
+  value v;
   string err = parse(v, json);
   if (!err.empty()) {
-    cout << err << endl;
-    return;
+    lasterror = err;
+    return false;
   }
 
   if (!v.is<object>()) {
-    cout << "not an object!" << endl;
-    return;
+    lasterror = "provided json is not an object";
+    return false;
   }
 
   const object& obj = v.get<object>();
-  for (auto i = obj.begin(); i != obj.end(); i++) {
-    cout << i->first << ": " << i->second.to_str() << endl;
+  auto verts_i = obj.find("verts");
+  auto planes_i = obj.find("planes");
+  auto sectors_i = obj.find("sectors");
+  if (verts_i == obj.end()) {
+    lasterror = "json does not contain a \"verts\" property";
+    return false;
   }
+  if (planes_i == obj.end()) {
+    lasterror = "json does not contain a \"planes\" property";
+    return false;
+  }
+  if (sectors_i == obj.end()) {
+    lasterror = "json does not contain a \"sectors\" property";
+    return false;
+  }
+  if (! verts_i->second.is<value::array>()) {
+    lasterror = "\"verts\" is not an array";
+    return false;
+  }
+  if (! planes_i->second.is<value::array>()) {
+    lasterror = "\"planes\" is not an array";
+    return false;
+  }
+  if (! sectors_i->second.is<value::array>()) {
+    lasterror = "\"sectors\" is not an array";
+    return false;
+  }
+  
+  
+  return true;
 }

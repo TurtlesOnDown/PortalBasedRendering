@@ -39,7 +39,12 @@ GLfloat lastFrame = 0.0f;
 int main()
 {
 
-  GeometryLoader::test();
+  GeometryLoader loader;
+  if (loader.loadFromFile("sectors.json")) {
+    cout << "loaded sectors.json successfuly!" << endl;
+  } else {
+    cout << loader.getLastError() << endl;
+  }
   
   GLFWwindow* window = openGLinit();
 
