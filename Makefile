@@ -13,7 +13,3 @@ $(TARGET): $(OBJECTS)
 .PHONY: clean
 clean:
 	rm -f $(TARGET) $(OBJECTS)
-	rm *~
-
-test: all
-	./portalengine

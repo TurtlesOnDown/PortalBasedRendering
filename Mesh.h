@@ -52,6 +52,7 @@ public:
 
 private:
   /*  Render data  */
+  //vertex array object, vertex buffer object, something buffer object?
   GLuint VAO, VBO, EBO;
 
   /*  Functions    */

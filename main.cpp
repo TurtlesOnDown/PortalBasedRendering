@@ -13,7 +13,6 @@
 #include "RenderStructure.h"
 #include "Camera.h"
 
-#include "GeometryLoader.h"
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -35,47 +34,29 @@ bool firstMouse = true;
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 
+
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
-
-  GeometryLoader loader;
-  if (loader.loadFromFile("sectors.json")) {
-    cout << "loaded sectors.json successfuly!" << endl;
-  } else {
-    cout << loader.getLastError() << endl;
-  }
-  
   GLFWwindow* window = openGLinit();
 
     // Build and compile our shader program
-    Shader ourShader("Shader/default.vs", "Shader/default.frag");
-
-    Vertex one{ {-.25,.25,0} };
-
-    vector<Vertex> testPlaneCoords{ 
-      { { .5f,.5f,0 }, {1,1}},
-      { { .5f,-.5f,0 }, {1,0}},
-      { { -.5f,-.5f,0 }, {0,0}},
-      { { -.5f,.5f,0 }, {0,1}},
-    };
-
-
+    Shader ourShader("default.vs", "default.frag");
 
     GLuint texture = newTexture("container.jpg");
 
-    Texture testTexture{texture};
-    Transformation testTransform1{ {0,0,10},{50, 50, 50} };
-    Transformation testTransform2{ { 0,20,0 },{ 50, 50, 50 } };
-
-    Plane testPlane(testPlaneCoords, testTexture, testTransform1);
-    Plane testPlane2(testPlaneCoords, testTexture, testTransform2);
+	glm::mat4 leftplane(0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 10, 1);
+	glm::mat4 rightplane(0, 0, -1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, -10, 1);
+    XPlane testPlane(leftplane, texture, nullptr, nullptr);
+    XPlane testPlane2(rightplane, texture, nullptr, nullptr);
 
     glm::mat4 projection;
     projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
     Renderer TestingRenderer(projection, ourShader);
-    TestingRenderer.pushPlane(testPlane);
-    TestingRenderer.pushPlane(testPlane2);
+    TestingRenderer.pushXPlane(testPlane);
+    TestingRenderer.pushXPlane(testPlane2);
+
+	//test portal geometry
 
 
 
