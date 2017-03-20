@@ -7,9 +7,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/quaternion.hpp>
 
-#include <iostream>
 
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
@@ -23,8 +21,8 @@ enum Camera_Movement {
 // Default camera values
 const GLfloat YAW = -90.0f;
 const GLfloat PITCH = 0.0f;
-const GLfloat SPEED = 10.0f;
-const GLfloat SENSITIVTY = 0.005f;
+const GLfloat SPEED = 5.0f;
+const GLfloat SENSITIVTY = 0.25f;
 const GLfloat ZOOM = 45.0f;
 
 
@@ -38,8 +36,9 @@ public:
   glm::vec3 Up;
   glm::vec3 Right;
   glm::vec3 WorldUp;
-  //Quaternions are better
-  glm::quat orientation;
+  // Eular Angles
+  GLfloat Yaw;
+  GLfloat Pitch;
   // Camera options
   GLfloat MovementSpeed;
   GLfloat MouseSensitivity;
@@ -50,6 +49,8 @@ public:
   {
     this->Position = position;
     this->WorldUp = up;
+    this->Yaw = yaw;
+    this->Pitch = pitch;
     this->updateCameraVectors();
   }
   // Constructor with scalar values
@@ -57,13 +58,14 @@ public:
   {
     this->Position = glm::vec3(posX, posY, posZ);
     this->WorldUp = glm::vec3(upX, upY, upZ);
+    this->Yaw = yaw;
+    this->Pitch = pitch;
     this->updateCameraVectors();
   }
 
   // Returns the view matrix calculated using Eular Angles and the LookAt Matrix
   glm::mat4 GetViewMatrix()
   {
-
     return glm::lookAt(this->Position, this->Position + this->Front, this->Up);
   }
 
@@ -87,13 +89,16 @@ public:
     xoffset *= this->MouseSensitivity;
     yoffset *= this->MouseSensitivity;
 
-    if (xoffset != 0 || yoffset != 0) {
-      glm::vec3 rot_angle(xoffset, yoffset, 0);
-      rot_angle = glm::cross(rot_angle, glm::vec3(0, 0, 1));
-      
-      rot_angle = rot_angle.y*this->Up + rot_angle.x*this->Right;
+    this->Yaw += xoffset;
+    this->Pitch += yoffset;
 
-      orientation = glm::rotate(orientation, glm::length(rot_angle), glm::normalize(rot_angle));
+    // Make sure that when pitch is out of bounds, screen doesn't get flipped
+    if (constrainPitch)
+    {
+      if (this->Pitch > 89.0f)
+        this->Pitch = 89.0f;
+      if (this->Pitch < -89.0f)
+        this->Pitch = -89.0f;
     }
 
     // Update Front, Right and Up Vectors using the updated Eular angles
@@ -115,15 +120,6 @@ private:
   // Calculates the front vector from the Camera's (updated) Eular Angles
   void updateCameraVectors()
   {
-
-    this->Front = glm::vec3(0, 0, 1);
-    this->Up = glm::vec3(0, 1, 0);
-
-    this->Front = ((glm::mat3x3)orientation)*this->Front*((glm::mat3x3)glm::conjugate(orientation));
-    this->Up = ((glm::mat3x3)orientation)*this->Up*((glm::mat3x3)glm::conjugate(orientation));
-    this->Right = glm::normalize(glm::cross(this->Front, this->Up));
-
-    /*
     // Calculate the new Front vector
     glm::vec3 front;
     front.x = cos(glm::radians(this->Yaw)) * cos(glm::radians(this->Pitch));
@@ -133,6 +129,5 @@ private:
     // Also re-calculate the Right and Up vector
     this->Right = glm::normalize(glm::cross(this->Front, this->WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
     this->Up = glm::normalize(glm::cross(this->Right, this->Front));
-    */
   }
 };

@@ -14,7 +14,7 @@ void Renderer::draw(Camera cam) {
   GLint viewLoc = glGetUniformLocation(this->current_shader.Program, "view");
   glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-  for (int i = 0; i < this->drawableObjects.size(); ++i) {
-    drawableObjects[i].Draw(this->current_shader);
+  for (int i = 0; i < this->the_World.size(); ++i) {
+    the_World[i].Draw(this->current_shader);
   }
 }

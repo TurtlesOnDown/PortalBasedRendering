@@ -7,13 +7,18 @@
 // GLFW
 #include <GLFW/glfw3.h>
 #include <SOIL.h>
+#include <cmath>
 
 // Other includes
+#include "XPlane.h"
 #include "Shader.h"
 #include "RenderStructure.h"
 #include "Camera.h"
 
 #include "GeometryLoader.h"
+
+
+const double PI = 3.14159265359;
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -38,44 +43,80 @@ GLfloat lastFrame = 0.0f;
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
-
   GeometryLoader loader;
   if (loader.loadFromFile("sectors.json")) {
     cout << "loaded sectors.json successfuly!" << endl;
-  } else {
+  }
+  else {
     cout << loader.getLastError() << endl;
   }
-  
+    
   GLFWwindow* window = openGLinit();
 
     // Build and compile our shader program
-    Shader ourShader("Shader/default.vs", "Shader/default.frag");
+    Shader ourShader("default.vs", "default.frag");
 
     Vertex one{ {-.25,.25,0} };
 
     vector<Vertex> testPlaneCoords{ 
-      { { .5f,.5f,0 }, {1,1}},
-      { { .5f,-.5f,0 }, {1,0}},
-      { { -.5f,-.5f,0 }, {0,0}},
-      { { -.5f,.5f,0 }, {0,1}},
+      { { 10.0f,10.0f,0 }, {1,1}},
+      { { 10.0f,-10.0f,0 }, {1,0}},
+      { { -10.0f,-10.0f,0 }, {0,0}},
+      { { -10.0f,10.0f,0 }, {0,1}},
     };
 
 
+    XVertex v0 = { { 20, 0, 0, },{ .0f, .0f } };
+    XVertex v1 = { { -20, 20, 0, },{ .0f, .0f } };
+      XVertex v2 = { { -20, -20, 0, },{ .0f, .0f } };
+      XVertex v3 = { { 20, 0, 20, },{ .0f, .0f } };
+      XVertex v4 = { { -20, 20, 20, },{ .0f, .0f } };
+      XVertex v5 = { { -20, -20, 20 },{ .0f, .0f } };
 
-    GLuint texture = newTexture("container.jpg");
 
-    Texture testTexture{texture};
-    Transformation testTransform1{ {0,0,10},{50, 50, 50} };
-    Transformation testTransform2{ { 0,20,0 },{ 50, 50, 50 } };
+    vector<XVertex> testA{ v0, v1, v2 };
+      vector<XVertex> testB{ v3, v4, v5 };
+      vector<XVertex> testC{ v0, v1, v3 };
+      vector<XVertex> testD{ v1, v2, v4 };
+      vector<XVertex> testE{ v2, v0, v5 };
 
-    Plane testPlane(testPlaneCoords, testTexture, testTransform1);
-    Plane testPlane2(testPlaneCoords, testTexture, testTransform2);
+      GLuint texture = newTexture("container.jpg");
+
+      XPlane A(testA, {1, 0, 0}, texture, nullptr, nullptr);
+      XPlane B(testB, {1, 0, 0}, texture, nullptr, nullptr);
+      XPlane C(testC, {0, 0, 1}, texture, nullptr, nullptr);
+      XPlane D(testD, { 0, 0, 1 }, texture, nullptr, nullptr);
+      XPlane E(testE, { 0, 0, 1 }, texture, nullptr, nullptr);
+
+      vector<XPlane> forSector{A, B, C, D, E};
+      Sector forWorld(forSector);
+      World testWorld{ forWorld };
+    
+
+    glm::mat4 tempTf;
+    tempTf = glm::translate(tempTf, glm::vec3(-1, 0, 0));
+
+    //cout << "This Garbage :" << testingShit << endl;
+
+    /*Texture testTexture{ {texture} };
+    Transformation testTransform1{ {0,0,0},{5, 5, 5},{90},{0},{0} };
+    Transformation testTransform2{ { 0,0,5 },{ 5, 5, 5 },{ 0 },{0},{0} };
+    Transformation testTransform3{ { 0,-5,0 },{ 5, 5, 5 },{ 45 },{ 45 },{ 0 } };
+    Transformation testTransform4{ { 0,5,0 },{ 5, 5, 5 },{ 45 },{ -45 },{ 0 } };
+
+    Plane testPlane(testPlaneCoords, texture, tempTf);
+    Plane testPlane2(testPlaneCoords, texture, tempTf);
+    Plane testPlane3(testPlaneCoords, texture, tempTf);
+    Plane testPlane4(testPlaneCoords, texture, tempTf);*/
 
     glm::mat4 projection;
     projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
-    Renderer TestingRenderer(projection, ourShader);
-    TestingRenderer.pushPlane(testPlane);
-    TestingRenderer.pushPlane(testPlane2);
+    Renderer TestingRenderer(projection, ourShader, loader.loadGeometryFinal());
+    //TestingRenderer.pushPlane(testingShit);
+    //TestingRenderer.pushPlane(testPlane2);
+    //TestingRenderer.pushPlane(testPlane3);
+    //TestingRenderer.pushPlane(testPlane4);
+    //TestingRenderer.pushPlane(testingShit);
 
 
 

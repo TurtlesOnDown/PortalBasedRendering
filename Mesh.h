@@ -12,6 +12,7 @@ using namespace std;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Shader.h"
+#include "XPlane.h"
 
 
 struct Vertex {
@@ -32,20 +33,28 @@ struct Texture {
 struct Transformation {
   glm::vec3 Position;
   glm::vec3 Scale;
+  GLfloat xrot;
+  GLfloat yrot;
+  GLfloat zrot;
 };
 
 class Plane {
 public:
   /*  Mesh Data  */
-  vector<Vertex> vertices;
+  vector<XVertex> quad = {
+    { { 10.0f,10.0f,0 },{ 1,1 } },
+    { { 10.0f,-10.0f,0 },{ 1,0 } },
+    { { -10.0f,-10.0f,0 },{ 0,0 } },
+    { { -10.0f,10.0f,0 },{ 0,1 } },
+  };
   GLuint indices[6] = { 0,1,3,1,2,3 };
-  Texture texture;
+  GLuint texture;
 
-  Transformation transform;
+  //Transformation transform;
 
   /*  Functions  */
   // Constructor
-  Plane(vector<Vertex> vertices, Texture texture, Transformation trans);
+  Plane(vector<Vertex> vertices, GLuint texture, glm::mat4 trans);
 
   // Render the mesh
   void Draw(Shader shader);
@@ -53,6 +62,8 @@ public:
 private:
   /*  Render data  */
   GLuint VAO, VBO, EBO;
+
+  glm::mat4 transform;
 
   /*  Functions    */
   // Initializes all the buffer objects/arrays
