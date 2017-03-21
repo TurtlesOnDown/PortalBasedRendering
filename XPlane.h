@@ -23,8 +23,6 @@ class Sector;
 class XPlane;
 typedef vector<Sector> World;
 
-constexpr GLuint TEXTURE_COUNT = 1;
-
 struct XVertex {
   // Position
   glm::vec3 Position;
@@ -40,6 +38,12 @@ class XPlane {
 public:
   XPlane(const glm::mat4 tf, GLuint tex, XPlane* lk, Sector* prnt) :
     transform(tf), texture(tex), link(lk), parent(prnt) {
+    XVertex v0 = { { 1, 1,0},{1.0f,1.0f } };
+    XVertex v1 = { {-1, 1,0},{ .0f,1.0f } };
+    XVertex v2 = { {-1,-1,0},{ .0f, .0f } };
+    XVertex v3 = { { 1,-1,0},{ .0f,1.0f } };
+	vector<XVertex> vs {tf * v0, tf * v1, tf * v2, tf * v3};
+	verts = vs;
     setUp();
   }
 
@@ -73,11 +77,17 @@ private:
   void setUp();
 };
 
-
+//TODO force args to be of length 4.
+vector<XPlane> quad(const vector<glm::vec3>& pts, const vector<glm::vec2>& uvs = {{1.0f, 1.0f},{0.0f, 1.0f},{0.0f, 0.0f},{1.0f, 0.0f}}) {
+	vector<XPlane> vs = {};
+	for (int i = 0; i < 4; ++i) {
+		vs.push_back({pts[i], uvs[i]});
+	}
+	return vs;
+}
 
 class Sector {
 public:
-  Sector() {}
   //constructor takes in a vector of pointers to XPlanes
   Sector(const vector<XPlane>& fs) : faces(fs) {}
   //destructor...? TODO
