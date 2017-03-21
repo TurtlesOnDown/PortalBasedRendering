@@ -88,3 +88,43 @@ void XPlane::Draw(Shader shader)
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
 }
+
+//TODO enfoce pts to have length 4
+vector<XVertex> makeQuad(const vector<glm::vec3>& pts) {
+  vector<XVertex> vs = {};
+  vector<glm::vec2> uvs = { { 1.0f, 1.0f },{ 0.0f, 1.0f },{ 0.0f, 0.0f },{ 1.0f, 0.0f } };
+  for (int i = 0; i < 4; ++i) {
+    vs.push_back({ pts[i], uvs[i] });
+  }
+
+  return vs;
+}
+
+
+void XPlane::DrawOntoScreen(Shader shader, const glm::mat4& proj) {
+  glm::vec3 tl(proj[0] + proj[1]);
+  glm::vec3 tr(proj[1] - proj[0]);
+  glm::vec3 bl(-proj[0] - proj[1]);
+  glm::vec3 br(proj[0] - proj[1]);
+
+  vector<XVertex> temp = this->verts;
+  this->verts = makeQuad({ tl, tr, bl, br });
+
+  glm::mat4 modelMatrix(1);
+  //cout << *this << endl;
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, this->texture);
+  glUniform1i(glGetUniformLocation(shader.Program, "ourTexture"), 0);
+
+  GLint transformLoc = glGetUniformLocation(shader.Program, "model");
+  //TODO fix dirty hack (we are already in world space).
+  //Will have to turn modelmat into a parameter when we draw multiple sectors.
+  glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+
+  // Draw mesh
+  glBindVertexArray(this->VAO);
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+  glBindVertexArray(0);
+
+  this->verts = temp;
+}
