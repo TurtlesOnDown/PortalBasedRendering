@@ -1,6 +1,4 @@
 #pragma once
-#ifndef XPLANE
-#define XPLANE
 
 
 // Std. Includes
@@ -38,30 +36,33 @@ class XPlane {
 public:
   XPlane(const glm::mat4 tf, GLuint tex, XPlane* lk, Sector* prnt) :
     transform(tf), texture(tex), link(lk), parent(prnt) {
-    XVertex v0 = { { 1, 1,0},{1.0f,1.0f } };
-    XVertex v1 = { {-1, 1,0},{ .0f,1.0f } };
-    XVertex v2 = { {-1,-1,0},{ .0f, .0f } };
-    XVertex v3 = { { 1,-1,0},{ .0f,1.0f } };
-	vector<XVertex> vs {tf* v0.Position, tf * v1.Position, tf * v2.Position, tf * v3.Position};
+    XVertex v0 = {glm::vec3(tf[0] + tf[1]), {1.0f,1.0f } };
+    XVertex v1 = {glm::vec3(tf[1] - tf[0]), { .0f,1.0f } };
+    XVertex v2 = {glm::vec3(-tf[0] - tf[1]), { .0f, .0f } };
+    XVertex v3 = {glm::vec3(tf[0] - tf[1]), { .0f,1.0f } };
+    vector<XVertex> vs { v0, v1, v2, v3 };
 	verts = vs;
     setUp();
   }
 
   XPlane(const vector<XVertex>& vs, glm::vec3 up, GLuint tex, XPlane* lk, Sector* prnt);
-  void Draw(Shader shader, int depth);
-
   //get the texture
-  GLuint getTex() {return texture;}
-  //set the texture if it is valid
-  void setTex(GLuint tx) {if (tx >= TEXTURE_COUNT) texture = tx;}
-
+  GLuint getTex() { return texture; }
+  //set the texture if it is valid TODO
+  void setTex(GLuint tx) { if (true) texture = tx; }
   //get the parent sector
-  Sector* getParent() {return parent;}
+  Sector* getParent() { return parent; }
   //get the plane corresponding to the other side of the portal
-  XPlane* getLink() {return link;}
+  XPlane* getLink() { return link; }
   //modify the portals in some way
-  void setLinkRaw(XPlane* newlink) {link = newlink;}
-  void setLinkTwoWayRaw(XPlane* newlink) {link = newlink; newlink->link = this;}
+  void setLinkRaw(XPlane* newlink) { link = newlink; }
+  void setLinkTwoWayRaw(XPlane* newlink) { link = newlink; newlink->link = this; }
+  //get the transform
+  glm::mat4 getTransform() { return transform; }
+  //fix the plane to a specific transform in world space
+  void setTransform(const glm::mat4& m) { transform = m; }
+
+  void Draw(Shader shader, int depth);
 private:
 
   glm::mat4 transform;
@@ -78,23 +79,25 @@ private:
 };
 
 //TODO force args to be of length 4.
-vector<XPlane> quad(const vector<glm::vec3>& pts, const vector<glm::vec2>& uvs = {{1.0f, 1.0f},{0.0f, 1.0f},{0.0f, 0.0f},{1.0f, 0.0f}}) {
-	vector<XPlane> vs = {};
+/*
+vector<XVertex> makeQuad(const vector<glm::vec3>& pts) {
+	vector<XVertex> vs = {};
+    vector<glm::vec2> uvs = { { 1.0f, 1.0f },{ 0.0f, 1.0f },{ 0.0f, 0.0f },{ 1.0f, 0.0f } };
 	for (int i = 0; i < 4; ++i) {
 		vs.push_back({pts[i], uvs[i]});
 	}
+
 	return vs;
 }
+*/
 
 class Sector {
 public:
   //constructor takes in a vector of pointers to XPlanes
-  Sector(const vector<XPlane>& fs) : faces(fs) {}
+  Sector(const vector<XPlane>& fs = {}) : faces(fs) {}
   //destructor...? TODO
 
   void Draw(Shader s, int depth) { for (auto fs : faces) { fs.Draw(s, depth); } };
 private:
   vector<XPlane> faces;
 };
-
-#endif // !XPLANE
