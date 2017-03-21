@@ -1,7 +1,8 @@
 SOURCES=$(shell find . -name "*.cpp")
 OBJECTS=$(SOURCES:%.cpp=%.o)
 TARGET=portalengine
-CXXFLAGS= -Wall -pedantic -std=c++11
+#CXXFLAGS= -Wall -pedantic -std=c++11
+CXXFLAGS= -w -std=c++11
 LDLIBS=-lGL -lGLEW -lglfw -lSOIL
 
 .PHONY: all
