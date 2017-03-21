@@ -35,6 +35,16 @@ bool firstMouse = true;
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 
+vector<XVertex> makeQuad(const vector<glm::vec3>& pts) {
+  vector<XVertex> vs = {};
+  vector<glm::vec2> uvs = { { 1.0f, 1.0f },{ 0.0f, 1.0f },{ 0.0f, 0.0f },{ 1.0f, 0.0f } };
+  for (int i = 0; i < 4; ++i) {
+    vs.push_back({ pts[i], uvs[i] });
+  }
+
+  return vs;
+}
+
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
@@ -44,61 +54,33 @@ int main()
     // Build and compile our shader program
     Shader ourShader("default.vs", "default.frag");
 
-    /*
-    glm::vec3 v0( 20, 20,-20);
-    glm::vec3 v1(-20, 20,-20);
-    glm::vec3 v2(-20,-20,-20);
-    glm::vec3 v3( 20,-20,-20);
-    glm::vec3 v4( 20, 20, 20);
+    //=======hardcoded data=============
+    glm::vec3 v0(20, 20, -20);
+    glm::vec3 v1(-20, 20, -20);
+    glm::vec3 v2(-20, -20, -20);
+    glm::vec3 v3(20, -20, -20);
+    glm::vec3 v4(20, 20, 20);
     glm::vec3 v5(-20, 20, 20);
-    glm::vec3 v6(-20,-20, 20);
-    glm::vec3 v7( 20,-20, 20);
-    glm::vec3 v8( 20, 20, 60);
+    glm::vec3 v6(-20, -20, 20);
+    glm::vec3 v7(20, -20, 20);
+    glm::vec3 v8(20, 20, 60);
     glm::vec3 v9(-20, 20, 60);
-    glm::vec3 v10(-20,-20, 60);
-    glm::vec3 v11( 20,-20, 60);
+    glm::vec3 v10(-20, -20, 60);
+    glm::vec3 v11(20, -20, 60);
 
-    vector<XVertex> s1b = makeQuad(vector<glm::vec3>{ v0, v1, v2, v3 });
-    vector<XVertex> s1f = makeQuad(vector<glm::vec3>{ v4, v5, v6, v7 });
-    vector<XVertex> s1l = makeQuad(vector<glm::vec3>{ v1, v5, v6, v4 });
-    vector<XVertex> s1r = makeQuad(vector<glm::vec3>{ v0, v4, v7, v3 });
-    vector<XVertex> s1u = makeQuad(vector<glm::vec3>{ v0, v1, v5, v4 });
-    vector<XVertex> s1d = makeQuad(vector<glm::vec3>{ v3, v2, v6, v7 });
+    vector<XVertex> s1b = makeQuad({ v0, v1, v2, v3 });
+    vector<XVertex> s1f = makeQuad({ v4, v5, v6, v7 });
+    vector<XVertex> s1l = makeQuad({ v1, v5, v6, v2 });
+    vector<XVertex> s1r = makeQuad({ v0, v4, v7, v3 });
+    vector<XVertex> s1u = makeQuad({ v0, v1, v5, v4 });
+    vector<XVertex> s1d = makeQuad({ v3, v2, v6, v7 });
 
-    vector<XVertex> s2b = makeQuad(vector<glm::vec3>{ v4, v5, v6, v7 });
-    vector<XVertex> s2f = makeQuad(vector<glm::vec3>{ v8, v9, v10, v11 });
-    vector<XVertex> s2l = makeQuad(vector<glm::vec3>{ v5, v9, v10, v8 });
-    vector<XVertex> s2r = makeQuad(vector<glm::vec3>{ v4, v8, v11, v7 });
-    vector<XVertex> s2u = makeQuad(vector<glm::vec3>{ v4, v5, v9, v8 });
-    vector<XVertex> s2d = makeQuad(vector<glm::vec3>{ v7, v6, v10, v11 });
-    */
-
-    XVertex v0 = { { 20, 20,-20 },{ 1.0f,1.0f } };
-    XVertex v1 = { { -20, 20,-20 },{ .0f,1.0f } };
-    XVertex v2 = { { -20,-20,-20 },{ .0f, .0f } };
-    XVertex v3 = { { 20,-20,-20 },{ 1.0f, .0f } };
-    XVertex v4 = { { 20, 20, 20 },{ 1.0f,1.0f } };
-    XVertex v5 = { { -20, 20, 20 },{ .0f,1.0f } };
-    XVertex v6 = { { -20,-20, 20 },{ .0f, .0f } };
-    XVertex v7 = { { 20,-20, 20 },{ 1.0f, .0f } };
-    XVertex v8 = { { 20, 20, 60 },{ 1.0f,1.0f } };
-    XVertex v9 = { { -20, 20, 60 },{ .0f,1.0f } };
-    XVertex v10 = { { -20,-20, 60 },{ .0f, .0f } };
-    XVertex v11 = { { 20,-20, 60 },{ 1.0f, .0f } };
-
-    vector<XVertex> s1b{ v0, v1, v2, v3 };
-    vector<XVertex> s1f{ v4, v5, v6, v7 };
-    vector<XVertex> s1l{ v1, v5, v6, v2 };
-    vector<XVertex> s1r{ v0, v4, v7, v3 };
-    vector<XVertex> s1u{ v0, v1, v5, v4 };
-    vector<XVertex> s1d{ v3, v2, v6, v7 };
-
-    vector<XVertex> s2b{ v4, v5, v6, v7 };
-    vector<XVertex> s2f{ v8, v9, v10, v11 };
-    vector<XVertex> s2l{ v5, v9, v10, v6 };
-    vector<XVertex> s2r{ v4, v8, v11, v7 };
-    vector<XVertex> s2u{ v4, v5, v9, v8 };
-    vector<XVertex> s2d{ v7, v6, v10, v11 };
+    vector<XVertex> s2b = makeQuad({ v4, v5, v6, v7 });
+    vector<XVertex> s2f = makeQuad({ v8, v9, v10, v11 });
+    vector<XVertex> s2l = makeQuad({ v5, v9, v10, v6 });
+    vector<XVertex> s2r = makeQuad({ v4, v8, v11, v7 });
+    vector<XVertex> s2u = makeQuad({ v4, v5, v9, v8 });
+    vector<XVertex> s2d = makeQuad({ v7, v6, v10, v11 });
 
     GLuint texture = newTexture("container.jpg");
 
@@ -130,7 +112,8 @@ int main()
     sector1 = Sector(cube1);
     //sector2 = Sector(cube2);
     World testWorld{sector1};
-      
+    //=========/hardcoded data=========== 
+
     glm::mat4 tempTf;
     tempTf = glm::translate(tempTf, glm::vec3(-1, 0, 0));
 
