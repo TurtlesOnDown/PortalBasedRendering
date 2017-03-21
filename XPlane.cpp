@@ -23,7 +23,8 @@ XPlane::XPlane(const vector<XVertex>& vs, glm::vec3 up, GLuint tex, XPlane* lk, 
     p += v->Position;
   }
   p = p * (1.0f / vs.size());
-
+  //p = vs[0].Position;
+  
   //forward = normal of input polygon, right = forward x up
   glm::vec3 forward = glm::cross(vs[1].Position - vs[0].Position,
     vs[2].Position - vs[0].Position); //assumes at least 3 verts
@@ -70,7 +71,7 @@ void XPlane::setUp() {
 
 void XPlane::Draw(Shader shader)
 {
-  cout << *this << endl;
+  //cout << *this << endl;
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, this->texture);
   glUniform1i(glGetUniformLocation(shader.Program, "ourTexture"), 0);

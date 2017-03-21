@@ -66,32 +66,55 @@ int main()
     };
 
 
-    XVertex v0 = { { 20, 0, 0, },{ .0f, .0f } };
-    XVertex v1 = { { -20, 20, 0, },{ .0f, .0f } };
-      XVertex v2 = { { -20, -20, 0, },{ .0f, .0f } };
-      XVertex v3 = { { 20, 0, 20, },{ .0f, .0f } };
-      XVertex v4 = { { -20, 20, 20, },{ .0f, .0f } };
-      XVertex v5 = { { -20, -20, 20 },{ .0f, .0f } };
+    XVertex v0 = { { 20, 20,-20 },{ .0f, .0f } };
+    XVertex v1 = { {-20, 20,-20 },{ .0f, .0f } };
+    XVertex v2 = { {-20,-20,-20 },{ .0f, .0f } };
+    XVertex v3 = { { 20,-20,-20 },{ .0f, .0f } };
+    XVertex v4 = { { 20, 20, 20 },{ .0f, .0f } };
+    XVertex v5 = { {-20, 20, 20 },{ .0f, .0f } };
+    XVertex v6 = { {-20,-20, 20 },{ .0f, .0f } };
+    XVertex v7 = { { 20,-20, 20 },{ .0f, .0f } };
+    XVertex v8 = { { 20, 20, 60 },{ .0f, .0f } };
+    XVertex v9 = { {-20, 20, 60 },{ .0f, .0f } };
+    XVertex v10= { {-20,-20, 60 },{ .0f, .0f } };
+    XVertex v11= { { 20,-20, 60 },{ .0f, .0f } };
 
+    vector<XVertex> s1b{ v0, v1, v2 };
+    vector<XVertex> s1f{ v4, v5, v6 };
+    vector<XVertex> s1l{ v1, v5, v6 };
+    vector<XVertex> s1r{ v0, v4, v7 };
+    vector<XVertex> s1u{ v0, v1, v5 };
+    vector<XVertex> s1d{ v3, v2, v6 };
 
-    vector<XVertex> testA{ v0, v1, v2 };
-      vector<XVertex> testB{ v3, v4, v5 };
-      vector<XVertex> testC{ v0, v1, v3 };
-      vector<XVertex> testD{ v1, v2, v4 };
-      vector<XVertex> testE{ v2, v0, v5 };
+    vector<XVertex> s2b{ v4, v5, v6 };
+    vector<XVertex> s2f{ v8, v9, v10 };
+    vector<XVertex> s2l{ v5, v9, v10 };
+    vector<XVertex> s2r{ v4, v8, v11 };
+    vector<XVertex> s2u{ v4, v5, v9 };
+    vector<XVertex> s2d{ v7, v6, v10 };
 
-      GLuint texture = newTexture("container.jpg");
+    GLuint texture = newTexture("container.jpg");
 
-      XPlane A(testA, {1, 0, 0}, texture, nullptr, nullptr);
-      XPlane B(testB, {1, 0, 0}, texture, nullptr, nullptr);
-      XPlane C(testC, {0, 0, 1}, texture, nullptr, nullptr);
-      XPlane D(testD, { 0, 0, 1 }, texture, nullptr, nullptr);
-      XPlane E(testE, { 0, 0, 1 }, texture, nullptr, nullptr);
+    XPlane s1B(s1b, {0, 1, 0}, texture, nullptr, nullptr);
+    XPlane s1F(s1f, {0, 1, 0}, texture, nullptr, nullptr);
+    XPlane s1L(s1l, {0, 1, 0}, texture, nullptr, nullptr);
+    XPlane s1R(s1r, {0, 1, 0}, texture, nullptr, nullptr);
+    XPlane s1U(s1u, {0, 0, 1}, texture, nullptr, nullptr);
+    XPlane s1D(s1d, {0, 0, 1}, texture, nullptr, nullptr);
 
-      vector<XPlane> forSector{A, B, C, D, E};
-      Sector forWorld(forSector);
-      World testWorld{ forWorld };
-    
+    XPlane s2B(s2b, {0, 1, 0}, texture, nullptr, nullptr);
+    XPlane s2F(s2f, {0, 1, 0}, texture, nullptr, nullptr);
+    XPlane s2L(s2l, {0, 1, 0}, texture, nullptr, nullptr);
+    XPlane s2R(s2r, {0, 1, 0}, texture, nullptr, nullptr);
+    XPlane s2U(s2u, {0, 0, 1}, texture, nullptr, nullptr);
+    XPlane s2D(s2d, {0, 0, 1}, texture, nullptr, nullptr);
+
+    vector<XPlane> cube1{s1B, s1F, s1L, s1R, s1U, s1D};
+    vector<XPlane> cube2{s2B, s2F, s2L, s2R, s2U, s2D};
+
+    Sector sector1(cube1);
+    Sector sector2(cube2);
+    World testWorld{sector1, sector2};
 
     glm::mat4 tempTf;
     tempTf = glm::translate(tempTf, glm::vec3(-1, 0, 0));
@@ -111,7 +134,7 @@ int main()
 
     glm::mat4 projection;
     projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
-    Renderer TestingRenderer(projection, ourShader, loader.loadGeometryFinal());
+    Renderer TestingRenderer(projection, ourShader, testWorld);
     //TestingRenderer.pushPlane(testingShit);
     //TestingRenderer.pushPlane(testPlane2);
     //TestingRenderer.pushPlane(testPlane3);
