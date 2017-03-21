@@ -2,7 +2,6 @@
 
 std::ostream& operator<<(std::ostream& out, const XPlane& f) {
   out << "XPlane:" << "\n";
-  out << "   addr = " << &f << "\n";
   out << "   transform =" << "\n";
   out << "   [" << f.transform[0][0] << ", " << f.transform[0][1] << ", " << f.transform[0][2] << ", " << f.transform[0][3] << "]" << "\n";
   out << "   [" << f.transform[1][0] << ", " << f.transform[1][1] << ", " << f.transform[1][2] << ", " << f.transform[1][3] << "]" << "\n";
@@ -72,20 +71,17 @@ void XPlane::setUp() {
 
 void XPlane::Draw(Shader shader)
 {
+  glm::mat4 modelMatrix(1); 
   //cout << *this << endl;
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, this->texture);
   glUniform1i(glGetUniformLocation(shader.Program, "ourTexture"), 0);
 
   GLint transformLoc = glGetUniformLocation(shader.Program, "model");
-  glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(this->transform));
+  //TODO fix dirty hack (we are already in world space).
+  //Will have to turn modelmat into a parameter when we draw multiple sectors.
+  glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
-  if (link) {
-    glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
-  } else {
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-  }
-  
   // Draw mesh
   glBindVertexArray(this->VAO);
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

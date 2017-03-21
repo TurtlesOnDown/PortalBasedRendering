@@ -15,9 +15,6 @@
 #include "RenderStructure.h"
 #include "Camera.h"
 
-#include "GeometryLoader.h"
-
-
 const double PI = 3.14159265359;
 
 // Function prototypes
@@ -43,13 +40,6 @@ GLfloat lastFrame = 0.0f;
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
-  GeometryLoader loader;
-  if (loader.loadFromFile("sectors.json")) {
-    cout << "loaded sectors.json successfuly!" << endl;
-  }
-  else {
-    cout << loader.getLastError() << endl;
-  }
     
   GLFWwindow* window = openGLinit();
 
@@ -66,18 +56,18 @@ int main()
     };
 
 
-    XVertex v0 = { { 20, 20,-20 },{ .0f, .0f } };
-    XVertex v1 = { {-20, 20,-20 },{ .0f, .0f } };
+    XVertex v0 = { { 20, 20,-20 },{1.0f,1.0f } };
+    XVertex v1 = { {-20, 20,-20 },{ .0f,1.0f } };
     XVertex v2 = { {-20,-20,-20 },{ .0f, .0f } };
-    XVertex v3 = { { 20,-20,-20 },{ .0f, .0f } };
-    XVertex v4 = { { 20, 20, 20 },{ .0f, .0f } };
-    XVertex v5 = { {-20, 20, 20 },{ .0f, .0f } };
+    XVertex v3 = { { 20,-20,-20 },{ .0f,1.0f } };
+    XVertex v4 = { { 20, 20, 20 },{1.0f,1.0f } };
+    XVertex v5 = { {-20, 20, 20 },{ .0f,1.0f } };
     XVertex v6 = { {-20,-20, 20 },{ .0f, .0f } };
-    XVertex v7 = { { 20,-20, 20 },{ .0f, .0f } };
-    XVertex v8 = { { 20, 20, 60 },{ .0f, .0f } };
-    XVertex v9 = { {-20, 20, 60 },{ .0f, .0f } };
+    XVertex v7 = { { 20,-20, 20 },{ .0f,1.0f } };
+    XVertex v8 = { { 20, 20, 60 },{1.0f,1.0f } };
+    XVertex v9 = { {-20, 20, 60 },{ .0f,1.0f } };
     XVertex v10= { {-20,-20, 60 },{ .0f, .0f } };
-    XVertex v11= { { 20,-20, 60 },{ .0f, .0f } };
+    XVertex v11= { { 20,-20, 60 },{ .0f,1.0f } };
 
 
     vector<XVertex> s1b{ v0, v1, v2, v3 };
@@ -129,27 +119,9 @@ int main()
     glm::mat4 tempTf;
     tempTf = glm::translate(tempTf, glm::vec3(-1, 0, 0));
 
-    //cout << "This Garbage :" << testingShit << endl;
-
-    /*Texture testTexture{ {texture} };
-    Transformation testTransform1{ {0,0,0},{5, 5, 5},{90},{0},{0} };
-    Transformation testTransform2{ { 0,0,5 },{ 5, 5, 5 },{ 0 },{0},{0} };
-    Transformation testTransform3{ { 0,-5,0 },{ 5, 5, 5 },{ 45 },{ 45 },{ 0 } };
-    Transformation testTransform4{ { 0,5,0 },{ 5, 5, 5 },{ 45 },{ -45 },{ 0 } };
-
-    Plane testPlane(testPlaneCoords, texture, tempTf);
-    Plane testPlane2(testPlaneCoords, texture, tempTf);
-    Plane testPlane3(testPlaneCoords, texture, tempTf);
-    Plane testPlane4(testPlaneCoords, texture, tempTf);*/
-
     glm::mat4 projection;
     projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
     Renderer TestingRenderer(projection, ourShader, testWorld);
-    //TestingRenderer.pushPlane(testingShit);
-    //TestingRenderer.pushPlane(testPlane2);
-    //TestingRenderer.pushPlane(testPlane3);
-    //TestingRenderer.pushPlane(testPlane4);
-    //TestingRenderer.pushPlane(testingShit);
 
 
 
