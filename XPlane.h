@@ -42,7 +42,7 @@ public:
     XVertex v1 = { {-1, 1,0},{ .0f,1.0f } };
     XVertex v2 = { {-1,-1,0},{ .0f, .0f } };
     XVertex v3 = { { 1,-1,0},{ .0f,1.0f } };
-	vector<XVertex> vs {tf * v0, tf * v1, tf * v2, tf * v3};
+	vector<XVertex> vs {tf* v0.Position, tf * v1.Position, tf * v2.Position, tf * v3.Position};
 	verts = vs;
     setUp();
   }

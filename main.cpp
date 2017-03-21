@@ -47,26 +47,25 @@ int main()
     Shader ourShader("default.vs", "default.frag");
 
 
-    XVertex v0 = { { 20, 20,-20 },{1.0f,1.0f } };
-    XVertex v1 = { {-20, 20,-20 },{ .0f,1.0f } };
-    XVertex v2 = { {-20,-20,-20 },{ .0f, .0f } };
-    XVertex v3 = { { 20,-20,-20 },{1.0f,0.0f } };
-    XVertex v4 = { { 20, 20, 20 },{1.0f,1.0f } };
-    XVertex v5 = { {-20, 20, 20 },{ .0f,1.0f } };
-    XVertex v6 = { {-20,-20, 20 },{ .0f, .0f } };
-    XVertex v7 = { { 20,-20, 20 },{1.0f, .0f } };
-    XVertex v8 = { { 20, 20, 60 },{1.0f,1.0f } };
-    XVertex v9 = { {-20, 20, 60 },{ .0f,1.0f } };
-    XVertex v10= { {-20,-20, 60 },{ .0f, .0f } };
-    XVertex v11= { { 20,-20, 60 },{1.0f,0.0f } };
+    glm::vec3 v0( 20, 20,-20);
+    glm::vec3 v1(-20, 20,-20);
+    glm::vec3 v2(-20,-20,-20);
+    glm::vec3 v3( 20,-20,-20);
+    glm::vec3 v4( 20, 20, 20);
+    glm::vec3 v5(-20, 20, 20);
+    glm::vec3 v6(-20,-20, 20);
+    glm::vec3 v7( 20,-20, 20);
+    glm::vec3 v8( 20, 20, 60);
+    glm::vec3 v9(-20, 20, 60);
+    glm::vec3 v10(-20,-20, 60);
+    glm::vec3 v11( 20,-20, 60);
 
-
-    vector<XVertex> s1b{ v0, v1, v2, v3 };
-    vector<XVertex> s1f{ v4, v5, v6, v7 };
-    vector<XVertex> s1l{ v1, v5, v6, v4 };
-    vector<XVertex> s1r{ v0, v4, v7, v3 };
-    vector<XVertex> s1u{ v0, v1, v5, v4 };
-    vector<XVertex> s1d{ v3, v2, v6, v7 };
+    vector<XVertex> s1b = quad({ v0, v1, v2, v3 });
+    vector<XVertex> s1f = quad({ v4, v5, v6, v7 });
+    vector<XVertex> s1l = quad({ v1, v5, v6, v4 });
+    vector<XVertex> s1r = quad({ v0, v4, v7, v3 });
+    vector<XVertex> s1u = quad({ v0, v1, v5, v4 });
+    vector<XVertex> s1d = quad({ v3, v2, v6, v7 });
 
     vector<XVertex> s2b{ v4, v5, v6, v7 };
     vector<XVertex> s2f{ v8, v9, v10, v11 };
