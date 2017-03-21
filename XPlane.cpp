@@ -70,7 +70,7 @@ void XPlane::setUp() {
 
 }
 
-void XPlane::Draw(Shader shader, int depth)
+void XPlane::Draw(Shader shader, Camera cam, int depth)
 {
   glm::mat4 modelMatrix(1); 
   //cout << *this << endl;
@@ -78,6 +78,7 @@ void XPlane::Draw(Shader shader, int depth)
   glBindTexture(GL_TEXTURE_2D, this->texture);
   glUniform1i(glGetUniformLocation(shader.Program, "ourTexture"), 0);
 
+  glStencilFunc(GL_GEQUAL, depth, 0xFFFF);
   if (link) {
     glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
   } else {
@@ -91,19 +92,28 @@ void XPlane::Draw(Shader shader, int depth)
 
   // Draw mesh
   glBindVertexArray(this->VAO);
-  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+  //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
 
   if (link) {
     //draw geometry behind portal
 
     //reset portal stencil
+    glDisable(GL_DEPTH_TEST);
     glStencilFunc(GL_GREATER, depth, 0xFFFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    glColorMask(false, false, false, false);
-    //DrawOntoScreen(shader, cam
+    //glColorMask(false, false, false, false);
+    //DrawOntoScreen(shader, cam);
     glColorMask(true, true, true, true);
+    glEnable(GL_DEPTH_TEST);
   }
+
+  
+  glDisable(GL_DEPTH_TEST);
+  glDisable(GL_STENCIL_TEST);
+  DrawOntoScreen(shader, cam);
+  glEnable(GL_DEPTH_TEST);
+  
 }
 
 //TODO enfoce pts to have length 4
@@ -118,14 +128,16 @@ vector<XVertex> makeQuad(const vector<glm::vec3>& pts) {
 }
 
 
-void XPlane::DrawOntoScreen(Shader shader, const glm::mat4& proj) {
-  glm::vec3 tl(proj[0] + proj[1]);
-  glm::vec3 tr(proj[1] - proj[0]);
-  glm::vec3 bl(-proj[0] - proj[1]);
-  glm::vec3 br(proj[0] - proj[1]);
+void XPlane::DrawOntoScreen(Shader shader, Camera& cam) {
+  glm::vec3 near = cam.Front;
+  glm::mat4 view = cam.GetViewMatrix();
+  glm::vec3 tl(view[0] + view[1]);
+  glm::vec3 tr(view[1] - view[0]);
+  glm::vec3 bl(-view[0] - view[1]);
+  glm::vec3 br(view[0] - view[1]);
 
   vector<XVertex> temp = this->verts;
-  this->verts = makeQuad({ tl, tr, bl, br });
+  this->verts = makeQuad({100.0f*tl,100.0f*tr,100.0f*bl,100.0f*br });
 
   glm::mat4 modelMatrix(1);
   //cout << *this << endl;

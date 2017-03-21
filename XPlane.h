@@ -62,8 +62,8 @@ public:
   //fix the plane to a specific transform in world space
   void setTransform(const glm::mat4& m) { transform = m; }
 
-  void Draw(Shader shader, int depth);
-  void DrawOntoScreen(Shader shader, const glm::mat4& proj);
+  void Draw(Shader shader, Camera cam, int depth);
+  void DrawOntoScreen(Shader shader, Camera& cam);
 private:
 
   glm::mat4 transform;
@@ -85,7 +85,7 @@ public:
   Sector(const vector<XPlane>& fs = {}) : faces(fs) {}
   //destructor...? TODO
 
-  void Draw(Shader s, int depth) { for (auto fs : faces) { fs.Draw(s, depth); } };
+  void Draw(Shader s, Camera cam, int depth) { for (auto fs : faces) { fs.Draw(s, cam, depth); } };
 private:
   vector<XPlane> faces;
 };

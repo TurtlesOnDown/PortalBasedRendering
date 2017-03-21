@@ -93,7 +93,7 @@ int main()
     XPlane s2U(s2u, {0, 0, 1}, texture, nullptr, nullptr);
     XPlane s2D(s2d, {0, 0, 1}, texture, nullptr, nullptr);
 	
-    //s1F.setLinkTwoWayRaw(&s2B);
+    s1F.setLinkTwoWayRaw(&s2B);
     //cout << s1F << endl;
     //cout << s2B << endl;
 
