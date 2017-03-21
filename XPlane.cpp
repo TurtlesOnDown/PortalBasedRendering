@@ -16,7 +16,7 @@ std::ostream& operator<<(std::ostream& out, const XPlane& f) {
 
 
 XPlane::XPlane(const vector<XVertex>& vs, glm::vec3 up, GLuint tex, XPlane* lk, Sector* prnt) :
-  texture(tex), link(lk), parent(prnt) {
+  verts(vs), texture(tex), link(lk), parent(prnt) {
 
   //position = center of input polygon
   glm::vec3 p;
@@ -50,7 +50,7 @@ void XPlane::setUp() {
   // A great thing about structs is that their memory layout is sequential for all its items.
   // The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
   // again translates to 3/2 floats which translates to a byte array.
-  glBufferData(GL_ARRAY_BUFFER, this->quad.size() * sizeof(XVertex), &this->quad[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, this->verts.size() * sizeof(XVertex), &this->verts[0], GL_STATIC_DRAW);
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(this->indices), &this->indices[0], GL_STATIC_DRAW);
@@ -70,7 +70,7 @@ void XPlane::setUp() {
 
 }
 
-void XPlane::Draw(Shader shader, int depth)
+void XPlane::Draw(Shader shader)
 {
   //cout << *this << endl;
   glActiveTexture(GL_TEXTURE0);
@@ -90,5 +90,4 @@ void XPlane::Draw(Shader shader, int depth)
   glBindVertexArray(this->VAO);
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
-
 }
