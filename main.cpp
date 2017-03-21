@@ -46,28 +46,19 @@ int main()
     // Build and compile our shader program
     Shader ourShader("default.vs", "default.frag");
 
-    Vertex one{ {-.25,.25,0} };
-
-    vector<Vertex> testPlaneCoords{ 
-      { { 10.0f,10.0f,0 }, {1,1}},
-      { { 10.0f,-10.0f,0 }, {1,0}},
-      { { -10.0f,-10.0f,0 }, {0,0}},
-      { { -10.0f,10.0f,0 }, {0,1}},
-    };
-
 
     XVertex v0 = { { 20, 20,-20 },{1.0f,1.0f } };
     XVertex v1 = { {-20, 20,-20 },{ .0f,1.0f } };
     XVertex v2 = { {-20,-20,-20 },{ .0f, .0f } };
-    XVertex v3 = { { 20,-20,-20 },{ .0f,1.0f } };
+    XVertex v3 = { { 20,-20,-20 },{1.0f,0.0f } };
     XVertex v4 = { { 20, 20, 20 },{1.0f,1.0f } };
     XVertex v5 = { {-20, 20, 20 },{ .0f,1.0f } };
     XVertex v6 = { {-20,-20, 20 },{ .0f, .0f } };
-    XVertex v7 = { { 20,-20, 20 },{ .0f,1.0f } };
+    XVertex v7 = { { 20,-20, 20 },{1.0f, .0f } };
     XVertex v8 = { { 20, 20, 60 },{1.0f,1.0f } };
     XVertex v9 = { {-20, 20, 60 },{ .0f,1.0f } };
     XVertex v10= { {-20,-20, 60 },{ .0f, .0f } };
-    XVertex v11= { { 20,-20, 60 },{ .0f,1.0f } };
+    XVertex v11= { { 20,-20, 60 },{1.0f,0.0f } };
 
 
     vector<XVertex> s1b{ v0, v1, v2, v3 };
@@ -104,7 +95,7 @@ int main()
     XPlane s2R(s2r, {0, 1, 0}, texture, nullptr, nullptr);
     XPlane s2U(s2u, {0, 0, 1}, texture, nullptr, nullptr);
     XPlane s2D(s2d, {0, 0, 1}, texture, nullptr, nullptr);
-
+	
     s1F.setLinkTwoWayRaw(&s2B);
     cout << s1F << endl;
     cout << s2B << endl;
