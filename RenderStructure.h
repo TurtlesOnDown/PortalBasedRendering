@@ -2,6 +2,7 @@
 #include "Mesh.h"
 #include "Camera.h"
 #include "XPlane.h"
+#include "ScreenPlane.h"
 
 class Renderer {
 public:
@@ -15,4 +16,5 @@ private:
   World the_World;
   glm::mat4 Perspective;
   Shader current_shader;
+  ScreenPlane testScreenPlane;
 };

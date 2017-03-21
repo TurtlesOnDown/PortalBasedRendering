@@ -13,6 +13,7 @@
 #include "XPlane.h"
 #include "RenderStructure.h"
 
+
 const double PI = 3.14159265359;
 
 // Function prototypes
@@ -112,6 +113,7 @@ int main()
     projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
     Renderer TestingRenderer(projection, ourShader, testWorld);
 
+   
 
 
     // Game loop
