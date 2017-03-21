@@ -35,15 +35,6 @@ bool firstMouse = true;
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 
-vector<XVertex> makeQuad(const vector<glm::vec3>& pts) {
-  vector<XVertex> vs = {};
-  vector<glm::vec2> uvs = { { 1.0f, 1.0f },{ 0.0f, 1.0f },{ 0.0f, 0.0f },{ 1.0f, 0.0f } };
-  for (int i = 0; i < 4; ++i) {
-    vs.push_back({ pts[i], uvs[i] });
-  }
-
-  return vs;
-}
 
 // The MAIN function, from here we start the application and run the game loop
 int main()
@@ -106,8 +97,8 @@ int main()
     //cout << s1F << endl;
     //cout << s2B << endl;
 
-    vector<XPlane> cube1{s1B, s1F, s1L, s1R, s1U, s1D, s2B, s2F, s2L, s2R, s2U, s2D };
-    //vector<XPlane> cube2{s2B, s2F, s2L, s2R, s2U, s2D};
+    vector<XPlane> cube1{s1B, s1F, s1L, s1R, s1U, s1D};
+    vector<XPlane> cube2{s2B, s2F, s2L, s2R, s2U, s2D};
 
     sector1 = Sector(cube1);
     //sector2 = Sector(cube2);

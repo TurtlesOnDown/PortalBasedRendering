@@ -63,6 +63,7 @@ public:
   void setTransform(const glm::mat4& m) { transform = m; }
 
   void Draw(Shader shader, int depth);
+  void DrawOntoScreen(Shader shader, const glm::mat4& proj);
 private:
 
   glm::mat4 transform;
@@ -78,19 +79,6 @@ private:
   void setUp();
 };
 
-//TODO force args to be of length 4.
-/*
-vector<XVertex> makeQuad(const vector<glm::vec3>& pts) {
-	vector<XVertex> vs = {};
-    vector<glm::vec2> uvs = { { 1.0f, 1.0f },{ 0.0f, 1.0f },{ 0.0f, 0.0f },{ 1.0f, 0.0f } };
-	for (int i = 0; i < 4; ++i) {
-		vs.push_back({pts[i], uvs[i]});
-	}
-
-	return vs;
-}
-*/
-
 class Sector {
 public:
   //constructor takes in a vector of pointers to XPlanes
@@ -101,3 +89,4 @@ public:
 private:
   vector<XPlane> faces;
 };
+vector<XVertex> makeQuad(const vector<glm::vec3>& pts);
