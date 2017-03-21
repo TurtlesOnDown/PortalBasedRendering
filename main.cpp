@@ -204,9 +204,9 @@ GLFWwindow* openGLinit() {
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_STENCIL_TEST);
-  glStencilFunc(GL_ALWAYS, 0, 0xFFFF);
+  glStencilFunc(GL_GEQUAL, 0, 0xFFFF);
   glClearStencil(0);
-  glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
+  glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
   
   return window;
 }

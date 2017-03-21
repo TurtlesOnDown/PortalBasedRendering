@@ -14,6 +14,6 @@ void Renderer::draw(Camera cam) {
   GLint viewLoc = glGetUniformLocation(this->current_shader.Program, "view");
   glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-  the_World[0].Draw(this->current_shader);
+  the_World[0].Draw(this->current_shader, 0);
 
 }

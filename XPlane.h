@@ -44,7 +44,7 @@ public:
   }
 
   XPlane(const vector<XVertex>& vs, glm::vec3 up, GLuint tex, XPlane* lk, Sector* prnt);
-  void Draw(Shader shader);
+  void Draw(Shader shader, int depth);
 
   //get the texture
   GLuint getTex() {return texture;}

@@ -70,7 +70,7 @@ void XPlane::setUp() {
 
 }
 
-void XPlane::Draw(Shader shader)
+void XPlane::Draw(Shader shader, int depth)
 {
   //cout << *this << endl;
   glActiveTexture(GL_TEXTURE0);
@@ -90,4 +90,12 @@ void XPlane::Draw(Shader shader)
   glBindVertexArray(this->VAO);
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
+
+  if (link) {
+    //draw geometry behind portal
+
+    //reset portal stencil
+    glStencilFunc(GL_GREATER, depth, 0xFFFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+  }
 }
