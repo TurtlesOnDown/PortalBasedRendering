@@ -2,6 +2,7 @@
 
 std::ostream& operator<<(std::ostream& out, const XPlane& f) {
   out << "XPlane:" << "\n";
+  out << "   addr = " << &f << "\n";
   out << "   transform =" << "\n";
   out << "   [" << f.transform[0][0] << ", " << f.transform[0][1] << ", " << f.transform[0][2] << ", " << f.transform[0][3] << "]" << "\n";
   out << "   [" << f.transform[1][0] << ", " << f.transform[1][1] << ", " << f.transform[1][2] << ", " << f.transform[1][3] << "]" << "\n";
@@ -69,7 +70,7 @@ void XPlane::setUp() {
 
 }
 
-void XPlane::Draw(Shader shader)
+void XPlane::Draw(Shader shader, int depth)
 {
   //cout << *this << endl;
   glActiveTexture(GL_TEXTURE0);
@@ -79,10 +80,15 @@ void XPlane::Draw(Shader shader)
   GLint transformLoc = glGetUniformLocation(shader.Program, "model");
   glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(this->transform));
 
+  if (link) {
+    glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+  } else {
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+  }
+  
   // Draw mesh
   glBindVertexArray(this->VAO);
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
-
 
 }

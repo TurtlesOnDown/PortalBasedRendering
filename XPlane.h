@@ -23,6 +23,8 @@ class Sector;
 class XPlane;
 typedef vector<Sector> World;
 
+constexpr GLuint TEXTURE_COUNT = 1;
+
 struct XVertex {
   // Position
   glm::vec3 Position;
@@ -42,7 +44,20 @@ public:
   }
 
   XPlane(const vector<XVertex>& vs, glm::vec3 up, GLuint tex, XPlane* lk, Sector* prnt);
-  void Draw(Shader shader);
+  void Draw(Shader shader, int depth);
+
+  //get the texture
+  GLuint getTex() {return texture;}
+  //set the texture if it is valid
+  void setTex(GLuint tx) {if (tx >= TEXTURE_COUNT) texture = tx;}
+
+  //get the parent sector
+  Sector* getParent() {return parent;}
+  //get the plane corresponding to the other side of the portal
+  XPlane* getLink() {return link;}
+  //modify the portals in some way
+  void setLinkRaw(XPlane* newlink) {link = newlink;}
+  void setLinkTwoWayRaw(XPlane* newlink) {link = newlink; newlink->link = this;}
 private:
 
   glm::mat4 transform;
@@ -67,6 +82,7 @@ private:
 
 class Sector {
 public:
+  Sector() {}
   //constructor takes in a vector of pointers to XPlanes
   Sector(const vector<XPlane>& fs) : faces(fs) {}
   //destructor...? TODO
