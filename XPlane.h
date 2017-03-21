@@ -49,12 +49,7 @@ private:
   XPlane* link;
   Sector* parent;
   GLuint texture;
-  vector<XVertex> quad = {
-    { { 100.0f,100.0f,0 },{ 1,1 } },
-    { { 100.0f,-100.0f,0 },{ 1,0 } },
-    { { -100.0f,-100.0f,0 },{ 0,0 } },
-    { { -100.0f,100.0f,0 },{ 0,1 } },
-  };
+  vector<XVertex> verts;
   GLuint indices[6] = { 0,1,3,1,2,3 };
 
 
