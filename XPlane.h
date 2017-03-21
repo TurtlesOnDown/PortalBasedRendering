@@ -82,7 +82,7 @@ public:
   Sector(const vector<XPlane>& fs) : faces(fs) {}
   //destructor...? TODO
 
-  void Draw(Shader s) { for (auto fs : faces) { fs.Draw(s); } };
+  void Draw(Shader s, int depth) { for (auto fs : faces) { fs.Draw(s, depth); } };
 private:
   vector<XPlane> faces;
 };
