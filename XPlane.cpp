@@ -79,9 +79,9 @@ void XPlane::Draw(Shader shader, int depth)
   glUniform1i(glGetUniformLocation(shader.Program, "ourTexture"), 0);
 
   if (link) {
-    //glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
   } else {
-    //glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
   }
   
   GLint transformLoc = glGetUniformLocation(shader.Program, "model");
@@ -98,10 +98,10 @@ void XPlane::Draw(Shader shader, int depth)
     //draw geometry behind portal
 
     //reset portal stencil
-    //glStencilFunc(GL_GREATER, depth, 0xFFFF);
-    //glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilFunc(GL_GREATER, depth, 0xFFFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     glColorMask(false, false, false, false);
-
+    //DrawOntoScreen(shader, cam
     glColorMask(true, true, true, true);
   }
 }
