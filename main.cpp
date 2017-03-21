@@ -11,9 +11,7 @@
 
 // Other includes
 #include "XPlane.h"
-#include "Shader.h"
 #include "RenderStructure.h"
-#include "Camera.h"
 
 const double PI = 3.14159265359;
 
@@ -46,7 +44,7 @@ int main()
     // Build and compile our shader program
     Shader ourShader("default.vs", "default.frag");
 
-
+    /*
     glm::vec3 v0( 20, 20,-20);
     glm::vec3 v1(-20, 20,-20);
     glm::vec3 v2(-20,-20,-20);
@@ -60,20 +58,47 @@ int main()
     glm::vec3 v10(-20,-20, 60);
     glm::vec3 v11( 20,-20, 60);
 
-    vector<XVertex> s1b = quad({ v0, v1, v2, v3 });
-    vector<XVertex> s1f = quad({ v4, v5, v6, v7 });
-    vector<XVertex> s1l = quad({ v1, v5, v6, v4 });
-    vector<XVertex> s1r = quad({ v0, v4, v7, v3 });
-    vector<XVertex> s1u = quad({ v0, v1, v5, v4 });
-    vector<XVertex> s1d = quad({ v3, v2, v6, v7 });
+    vector<XVertex> s1b = makeQuad(vector<glm::vec3>{ v0, v1, v2, v3 });
+    vector<XVertex> s1f = makeQuad(vector<glm::vec3>{ v4, v5, v6, v7 });
+    vector<XVertex> s1l = makeQuad(vector<glm::vec3>{ v1, v5, v6, v4 });
+    vector<XVertex> s1r = makeQuad(vector<glm::vec3>{ v0, v4, v7, v3 });
+    vector<XVertex> s1u = makeQuad(vector<glm::vec3>{ v0, v1, v5, v4 });
+    vector<XVertex> s1d = makeQuad(vector<glm::vec3>{ v3, v2, v6, v7 });
+
+    vector<XVertex> s2b = makeQuad(vector<glm::vec3>{ v4, v5, v6, v7 });
+    vector<XVertex> s2f = makeQuad(vector<glm::vec3>{ v8, v9, v10, v11 });
+    vector<XVertex> s2l = makeQuad(vector<glm::vec3>{ v5, v9, v10, v8 });
+    vector<XVertex> s2r = makeQuad(vector<glm::vec3>{ v4, v8, v11, v7 });
+    vector<XVertex> s2u = makeQuad(vector<glm::vec3>{ v4, v5, v9, v8 });
+    vector<XVertex> s2d = makeQuad(vector<glm::vec3>{ v7, v6, v10, v11 });
+    */
+
+    XVertex v0 = { { 20, 20,-20 },{ 1.0f,1.0f } };
+    XVertex v1 = { { -20, 20,-20 },{ .0f,1.0f } };
+    XVertex v2 = { { -20,-20,-20 },{ .0f, .0f } };
+    XVertex v3 = { { 20,-20,-20 },{ 1.0f, .0f } };
+    XVertex v4 = { { 20, 20, 20 },{ 1.0f,1.0f } };
+    XVertex v5 = { { -20, 20, 20 },{ .0f,1.0f } };
+    XVertex v6 = { { -20,-20, 20 },{ .0f, .0f } };
+    XVertex v7 = { { 20,-20, 20 },{ 1.0f, .0f } };
+    XVertex v8 = { { 20, 20, 60 },{ 1.0f,1.0f } };
+    XVertex v9 = { { -20, 20, 60 },{ .0f,1.0f } };
+    XVertex v10 = { { -20,-20, 60 },{ .0f, .0f } };
+    XVertex v11 = { { 20,-20, 60 },{ 1.0f, .0f } };
+
+    vector<XVertex> s1b{ v0, v1, v2, v3 };
+    vector<XVertex> s1f{ v4, v5, v6, v7 };
+    vector<XVertex> s1l{ v1, v5, v6, v2 };
+    vector<XVertex> s1r{ v0, v4, v7, v3 };
+    vector<XVertex> s1u{ v0, v1, v5, v4 };
+    vector<XVertex> s1d{ v3, v2, v6, v7 };
 
     vector<XVertex> s2b{ v4, v5, v6, v7 };
     vector<XVertex> s2f{ v8, v9, v10, v11 };
-    vector<XVertex> s2l{ v5, v9, v10, v8 };
+    vector<XVertex> s2l{ v5, v9, v10, v6 };
     vector<XVertex> s2r{ v4, v8, v11, v7 };
     vector<XVertex> s2u{ v4, v5, v9, v8 };
     vector<XVertex> s2d{ v7, v6, v10, v11 };
-
 
     GLuint texture = newTexture("container.jpg");
 
@@ -81,30 +106,30 @@ int main()
     Sector sector1;
     Sector sector2;
 
-    XPlane s1B(s1b, {0, 1, 0}, texture, nullptr, &sector1);
+    XPlane s1B(s1b, {0, 1, 0}, texture, nullptr, nullptr);
     XPlane s1F(s1f, {0, 1, 0}, texture, nullptr, nullptr);
     XPlane s1L(s1l, {0, 1, 0}, texture, nullptr, nullptr);
     XPlane s1R(s1r, {0, 1, 0}, texture, nullptr, nullptr);
     XPlane s1U(s1u, {0, 0, 1}, texture, nullptr, nullptr);
     XPlane s1D(s1d, {0, 0, 1}, texture, nullptr, nullptr);
 
-    XPlane s2B(s2b, {0, 1, 0}, texture, nullptr, &sector2);
+    XPlane s2B(s2b, {0, 1, 0}, texture, nullptr, nullptr);
     XPlane s2F(s2f, {0, 1, 0}, texture, nullptr, nullptr);
     XPlane s2L(s2l, {0, 1, 0}, texture, nullptr, nullptr);
     XPlane s2R(s2r, {0, 1, 0}, texture, nullptr, nullptr);
     XPlane s2U(s2u, {0, 0, 1}, texture, nullptr, nullptr);
     XPlane s2D(s2d, {0, 0, 1}, texture, nullptr, nullptr);
 	
-    s1F.setLinkTwoWayRaw(&s2B);
-    cout << s1F << endl;
-    cout << s2B << endl;
+    //s1F.setLinkTwoWayRaw(&s2B);
+    //cout << s1F << endl;
+    //cout << s2B << endl;
 
-    vector<XPlane> cube1{s1B, s1F, s1L, s1R, s1U, s1D};
-    vector<XPlane> cube2{s2B, s2F, s2L, s2R, s2U, s2D};
+    vector<XPlane> cube1{s1B, s1F, s1L, s1R, s1U, s1D, s2B, s2F, s2L, s2R, s2U, s2D };
+    //vector<XPlane> cube2{s2B, s2F, s2L, s2R, s2U, s2D};
 
     sector1 = Sector(cube1);
-    sector2 = Sector(cube2);
-    World testWorld{sector1, sector2};
+    //sector2 = Sector(cube2);
+    World testWorld{sector1};
       
     glm::mat4 tempTf;
     tempTf = glm::translate(tempTf, glm::vec3(-1, 0, 0));
