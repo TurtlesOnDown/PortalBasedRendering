@@ -6,7 +6,7 @@ void Renderer::draw(Camera cam) {
 
   this->current_shader.Use();
 
-  this->testScreenPlane.render(this->current_shader);
+  //this->testScreenPlane.render(this->current_shader);
   
   GLint projLoc = glGetUniformLocation(this->current_shader.Program, "projection");
   glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(this->Perspective));
@@ -15,6 +15,5 @@ void Renderer::draw(Camera cam) {
   GLint viewLoc = glGetUniformLocation(this->current_shader.Program, "view");
   glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-  the_World[0].Draw(this->current_shader, cam, 0);
-
+  the_World[0].Draw(this->current_shader, cam, this->testScreenPlane, Perspective, 0);
 }

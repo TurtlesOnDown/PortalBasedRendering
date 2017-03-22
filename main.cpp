@@ -152,6 +152,10 @@ GLFWwindow* openGLinit() {
   GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "PortalBasedRendering", nullptr, nullptr);
   glfwMakeContextCurrent(window);
 
+  int foo;
+  glGetIntegerv(GL_STENCIL_BITS, &foo);
+  cout << foo << endl;
+  
   // Set the required callback functions
   glfwSetKeyCallback(window, key_callback);
   glfwSetCursorPosCallback(window, mouse_callback);

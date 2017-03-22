@@ -12,9 +12,11 @@ public:
   void dumpObjects() { this->the_World.empty(); };
   void draw(Camera cam);
 
-private:
-  World the_World;
-  glm::mat4 Perspective;
-  Shader current_shader;
   ScreenPlane testScreenPlane;
+  glm::mat4 Perspective;
+
+ private:
+  World the_World;
+  Shader current_shader;
+
 };

@@ -70,8 +70,11 @@ void XPlane::setUp() {
 
 }
 
-void XPlane::Draw(Shader shader, Camera cam, int depth)
+void XPlane::Draw(Shader shader, Camera cam, ScreenPlane& screenplane, glm::mat4 proj, int depth)
 {
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_STENCIL_TEST);
+  
   glm::mat4 modelMatrix(1); 
   //cout << *this << endl;
   glActiveTexture(GL_TEXTURE0);
@@ -92,28 +95,22 @@ void XPlane::Draw(Shader shader, Camera cam, int depth)
 
   // Draw mesh
   glBindVertexArray(this->VAO);
-  //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
-
+  
   if (link) {
     //draw geometry behind portal
 
     //reset portal stencil
-    glDisable(GL_DEPTH_TEST);
-    glStencilFunc(GL_GREATER, depth, 0xFFFF);
+    glEnable(GL_DEPTH_TEST);
+    glStencilFunc(GL_EQUAL, 1, 0xFFFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    //glColorMask(false, false, false, false);
+    glColorMask(false, false, false, false);
+    screenplane.render(shader, cam, proj);
     //DrawOntoScreen(shader, cam);
     glColorMask(true, true, true, true);
     glEnable(GL_DEPTH_TEST);
-  }
-
-  
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_STENCIL_TEST);
-  DrawOntoScreen(shader, cam);
-  glEnable(GL_DEPTH_TEST);
-  
+  }  
 }
 
 //TODO enfoce pts to have length 4
@@ -129,31 +126,5 @@ vector<XVertex> makeQuad(const vector<glm::vec3>& pts) {
 
 
 void XPlane::DrawOntoScreen(Shader shader, Camera& cam) {
-  glm::vec3 near = cam.Front;
-  glm::mat4 view = cam.GetViewMatrix();
-  glm::vec3 tl(view[0] + view[1]);
-  glm::vec3 tr(view[1] - view[0]);
-  glm::vec3 bl(-view[0] - view[1]);
-  glm::vec3 br(view[0] - view[1]);
-
-  vector<XVertex> temp = this->verts;
-  this->verts = makeQuad({100.0f*tl,100.0f*tr,100.0f*bl,100.0f*br });
-
-  glm::mat4 modelMatrix(1);
-  //cout << *this << endl;
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, this->texture);
-  glUniform1i(glGetUniformLocation(shader.Program, "ourTexture"), 0);
-
-  GLint transformLoc = glGetUniformLocation(shader.Program, "model");
-  //TODO fix dirty hack (we are already in world space).
-  //Will have to turn modelmat into a parameter when we draw multiple sectors.
-  glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-
-  // Draw mesh
-  glBindVertexArray(this->VAO);
-  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-  glBindVertexArray(0);
-
-  this->verts = temp;
+  cout << "no" << endl;
 }
