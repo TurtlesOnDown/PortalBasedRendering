@@ -76,6 +76,8 @@ int main()
     vector<XVertex> s2d = makeQuad({ v7, v6, v10, v11 });
 
     GLuint texture = newTexture("container.jpg");
+    //GLuint texture2 = newTexture("brick.jpg");
+    //GLuint texture3 = newTexture("wood.jpg");
 
 
     Sector sector1;
