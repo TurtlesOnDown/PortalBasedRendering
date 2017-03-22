@@ -70,42 +70,50 @@ void XPlane::setUp() {
 
 }
 
-void XPlane::Draw(Shader shader, Camera cam, ScreenPlane& screenplane, glm::mat4 proj, int depth)
+void XPlane::Draw(Shader shader, Camera cam, ScreenPlane& screenplane, glm::mat4 proj, int depth, const glm::mat4& modelMatrix)
 {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_STENCIL_TEST);
-  
-  glm::mat4 modelMatrix(1); 
+
   //cout << *this << endl;
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, this->texture);
   glUniform1i(glGetUniformLocation(shader.Program, "ourTexture"), 0);
 
-  glStencilFunc(GL_GEQUAL, depth, 0xFFFF);
+  glStencilFunc(GL_LEQUAL, depth, 0xFF);
   if (link) {
     glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
   } else {
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
   }
   
   GLint transformLoc = glGetUniformLocation(shader.Program, "model");
   //TODO fix dirty hack (we are already in world space).
   //Will have to turn modelmat into a parameter when we draw multiple sectors.
   glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-
+ 
+  if (link) {
+    glDisable(GL_DEPTH_TEST);
+  }
   // Draw mesh
   glBindVertexArray(this->VAO);
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
-  
   if (link) {
-    //draw geometry behind portal
-
-    //reset portal stencil
     glEnable(GL_DEPTH_TEST);
-    glStencilFunc(GL_EQUAL, 1, 0xFFFF);
+  }
+
+  
+  if (link && depth < 2) {
+    //draw geometry behind portal
+    glm::mat4 CoB = flip(link->getTransform()) * modelMatrix * glm::inverse(transform);
+    link->getParent()->Draw(shader, cam, screenplane, proj, depth + 1, CoB);
+    //reset portal stencil
+    glDisable(GL_DEPTH_TEST);
+    glStencilFunc(GL_LESS, 0, 0xFF);
+
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    glColorMask(false, false, false, false);
+    glColorMask(true, false, false, false);
     screenplane.render(shader, cam, proj);
     //DrawOntoScreen(shader, cam);
     glColorMask(true, true, true, true);
@@ -133,7 +141,7 @@ void XPlane::DrawOntoScreen(Shader shader, Camera& cam) {
 void Camera::updateCurrentSector() {
   vector<XPlane> planes = currentSector->getFaces();
   for (auto plane : planes) {
-    if (glm::dot(Position - glm::vec3(plane.getTransform()[3]) , glm::vec3(plane.getTransform()[2])) > 0) {
+    if (glm::dot(Position - glm::vec3(plane.getTransform()[3]) , glm::vec3(plane.getTransform()[2])) < 0) {
       XPlane* link = plane.getLink();
       if (link != nullptr) {
         cout << *link << endl;

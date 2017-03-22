@@ -65,7 +65,7 @@ public:
   //fix the plane to a specific transform in world space
   void setTransform(const glm::mat4& m) { transform = m; }
 
-  void Draw(Shader shader, Camera cam, ScreenPlane& screenplane, glm::mat4 proj, int depth);
+  void Draw(Shader shader, Camera cam, ScreenPlane& screenplane, glm::mat4 proj, int depth, const glm::mat4& modelMatrix);
   void DrawOntoScreen(Shader shader, Camera& cam);
 private:
 
@@ -80,6 +80,10 @@ private:
   GLuint VAO, VBO, EBO;
 
   void setUp();
+
+  glm::mat4 flip(glm::mat4&& toflip) {
+    return glm::mat4(-toflip[0], toflip[1], -toflip[2], toflip[3]);
+  };
 };
 
 
@@ -89,9 +93,20 @@ public:
   Sector(const vector<XPlane>& fs = {}) : faces(fs) {}
   //destructor...? TODO
 
-  void Draw(Shader s, Camera cam, ScreenPlane& screenplane, glm::mat4 proj, int depth) {
-    for (auto fs : faces) { fs.Draw(s, cam, screenplane, proj, depth); }
-  };
+  void Draw(Shader s, Camera cam, ScreenPlane& screenplane, glm::mat4 proj, int depth, const glm::mat4& tr = glm::mat4(1)) {
+    for (auto fs : faces) {
+      glm::vec3 norm(fs.getTransform()[2]);
+      glm::vec3 posn(fs.getTransform()[3]);
+      float cosangle = glm::dot(cam.Front, norm) / (glm::length(cam.Front) * glm::length(norm));
+      if (cosangle < 0.707) {
+        float gtz = glm::dot(cam.Position - posn, norm);
+        if (fs.getParent() != this || gtz >= 0) {
+          fs.Draw(s, cam, screenplane, proj, depth, tr);
+        }
+      }
+    }
+  }
+
   vector<XPlane> getFaces() { return faces; }
 
   void Move(const glm::mat4 moveby) {
@@ -107,5 +122,6 @@ public:
 private:
   vector<XPlane> faces;
 };
+
 vector<XVertex> makeQuad(const vector<glm::vec3>& pts);
 

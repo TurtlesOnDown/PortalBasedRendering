@@ -62,17 +62,17 @@ int main()
     glm::vec3 v11(20, -20, 60);
 
     vector<XVertex> s1b = makeQuad({ v0, v1, v2, v3 });
-    vector<XVertex> s1f = makeQuad({ v4, v5, v6, v7 });
+    vector<XVertex> s1f = makeQuad({ v7, v6, v5, v4 });
     vector<XVertex> s1l = makeQuad({ v1, v5, v6, v2 });
-    vector<XVertex> s1r = makeQuad({ v0, v4, v7, v3 });
-    vector<XVertex> s1u = makeQuad({ v0, v1, v5, v4 });
+    vector<XVertex> s1r = makeQuad({ v3, v7, v4, v0 });
+    vector<XVertex> s1u = makeQuad({ v4, v5, v1, v0 });
     vector<XVertex> s1d = makeQuad({ v3, v2, v6, v7 });
 
-    vector<XVertex> s2b = makeQuad({ v4, v7, v6, v5 });
-    vector<XVertex> s2f = makeQuad({ v8, v9, v10, v11 });
+    vector<XVertex> s2b = makeQuad({ v5, v6, v7, v4 });
+    vector<XVertex> s2f = makeQuad({ v11, v10, v9, v8 });
     vector<XVertex> s2l = makeQuad({ v5, v9, v10, v6 });
-    vector<XVertex> s2r = makeQuad({ v4, v8, v11, v7 });
-    vector<XVertex> s2u = makeQuad({ v4, v5, v9, v8 });
+    vector<XVertex> s2r = makeQuad({ v7, v11, v8, v4 });
+    vector<XVertex> s2u = makeQuad({ v8, v9, v5, v4 });
     vector<XVertex> s2d = makeQuad({ v7, v6, v10, v11 });
 
     GLuint texture = newTexture("container.jpg");

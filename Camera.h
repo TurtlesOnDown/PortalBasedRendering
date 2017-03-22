@@ -138,6 +138,6 @@ private:
   }
   void updateCurrentSector();
   glm::mat4 flip(glm::mat4&& toflip) {
-    return glm::mat4(toflip[0], toflip[1], -toflip[2], toflip[3]);
-  }
+    return glm::mat4(-toflip[0], toflip[1], -toflip[2], toflip[3]);
+  };
 };
