@@ -42,6 +42,7 @@ int main()
 {
     
   GLFWwindow* window = openGLinit();
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // Build and compile our shader program
     Shader ourShader("default.vs", "default.frag");
@@ -67,7 +68,7 @@ int main()
     vector<XVertex> s1u = makeQuad({ v0, v1, v5, v4 });
     vector<XVertex> s1d = makeQuad({ v3, v2, v6, v7 });
 
-    vector<XVertex> s2b = makeQuad({ v4, v5, v6, v7 });
+    vector<XVertex> s2b = makeQuad({ v4, v7, v6, v5 });
     vector<XVertex> s2f = makeQuad({ v8, v9, v10, v11 });
     vector<XVertex> s2l = makeQuad({ v5, v9, v10, v6 });
     vector<XVertex> s2r = makeQuad({ v4, v8, v11, v7 });
@@ -80,19 +81,19 @@ int main()
     Sector sector1;
     Sector sector2;
 
-    XPlane s1B(s1b, {0, 1, 0}, texture, nullptr, nullptr);
-    XPlane s1F(s1f, {0, 1, 0}, texture, nullptr, nullptr);
-    XPlane s1L(s1l, {0, 1, 0}, texture, nullptr, nullptr);
-    XPlane s1R(s1r, {0, 1, 0}, texture, nullptr, nullptr);
-    XPlane s1U(s1u, {0, 0, 1}, texture, nullptr, nullptr);
-    XPlane s1D(s1d, {0, 0, 1}, texture, nullptr, nullptr);
+    XPlane s1B(s1b, {0, 1, 0}, texture, nullptr, &sector1);
+    XPlane s1F(s1f, {0, 1, 0}, texture, nullptr, &sector1);
+    XPlane s1L(s1l, {0, 1, 0}, texture, nullptr, &sector1);
+    XPlane s1R(s1r, {0, 1, 0}, texture, nullptr, &sector1);
+    XPlane s1U(s1u, {0, 0, 1}, texture, nullptr, &sector1);
+    XPlane s1D(s1d, {0, 0, 1}, texture, nullptr, &sector1);
 
-    XPlane s2B(s2b, {0, 1, 0}, texture, nullptr, nullptr);
-    XPlane s2F(s2f, {0, 1, 0}, texture, nullptr, nullptr);
-    XPlane s2L(s2l, {0, 1, 0}, texture, nullptr, nullptr);
-    XPlane s2R(s2r, {0, 1, 0}, texture, nullptr, nullptr);
-    XPlane s2U(s2u, {0, 0, 1}, texture, nullptr, nullptr);
-    XPlane s2D(s2d, {0, 0, 1}, texture, nullptr, nullptr);
+    XPlane s2B(s2b, {0, 1, 0}, texture, nullptr, &sector2);
+    XPlane s2F(s2f, {0, 1, 0}, texture, nullptr, &sector2);
+    XPlane s2L(s2l, {0, 1, 0}, texture, nullptr, &sector2);
+    XPlane s2R(s2r, {0, 1, 0}, texture, nullptr, &sector2);
+    XPlane s2U(s2u, {0, 0, 1}, texture, nullptr, &sector2);
+    XPlane s2D(s2d, {0, 0, 1}, texture, nullptr, &sector2);
 	
     s1F.setLinkTwoWayRaw(&s2B);
     //cout << s1F << endl;
@@ -102,9 +103,11 @@ int main()
     vector<XPlane> cube2{s2B, s2F, s2L, s2R, s2U, s2D};
 
     sector1 = Sector(cube1);
-    //sector2 = Sector(cube2);
-    World testWorld{sector1};
+    sector2 = Sector(cube2);
+    World testWorld{sector1, sector2};
     //=========/hardcoded data=========== 
+
+    camera.setSector(&testWorld[0]);
 
     glm::mat4 tempTf;
     tempTf = glm::translate(tempTf, glm::vec3(-1, 0, 0));
@@ -126,6 +129,9 @@ int main()
         // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
         glfwPollEvents();
         Do_Movement();
+
+        //glm::mat4 srotate = glm::rotate(glm::mat4(1), deltaTime, glm::vec4(1, 0, 0, 0));
+        //sector2.Move(srotate);
 
         TestingRenderer.draw(camera);
 

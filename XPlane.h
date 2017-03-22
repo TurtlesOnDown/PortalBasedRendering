@@ -56,6 +56,7 @@ public:
   Sector* getParent() { return parent; }
   //get the plane corresponding to the other side of the portal
   XPlane* getLink() { return link; }
+  vector<XVertex> getVerts() { return verts; }
   //modify the portals in some way
   void setLinkRaw(XPlane* newlink) { link = newlink; }
   void setLinkTwoWayRaw(XPlane* newlink) { link = newlink; newlink->link = this; }
@@ -91,6 +92,18 @@ public:
   void Draw(Shader s, Camera cam, ScreenPlane& screenplane, glm::mat4 proj, int depth) {
     for (auto fs : faces) { fs.Draw(s, cam, screenplane, proj, depth); }
   };
+  vector<XPlane> getFaces() { return faces; }
+
+  void Move(const glm::mat4 moveby) {
+    for (auto face : faces) {
+      face.setTransform(moveby * face.getTransform());
+      vector<XVertex> vs = face.getVerts();
+      for (auto v : vs) {
+        v.Position = glm::vec3(moveby * glm::vec4(v.Position, 1));
+      }
+    }
+  }
+
 private:
   vector<XPlane> faces;
 };

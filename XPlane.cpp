@@ -128,3 +128,25 @@ vector<XVertex> makeQuad(const vector<glm::vec3>& pts) {
 void XPlane::DrawOntoScreen(Shader shader, Camera& cam) {
   cout << "no" << endl;
 }
+
+
+void Camera::updateCurrentSector() {
+  vector<XPlane> planes = currentSector->getFaces();
+  for (auto plane : planes) {
+    if (glm::dot(Position - glm::vec3(plane.getTransform()[3]) , glm::vec3(plane.getTransform()[2])) > 0) {
+      XPlane* link = plane.getLink();
+      if (link != nullptr) {
+        cout << *link << endl;
+        currentSector = link->getParent();
+        //glm::mat4 CoB = flip(link->getTransform()) * glm::inverse(plane.getTransform());
+        //Front = glm::vec3(CoB * glm::vec4(Front, 0));
+        //Up = glm::vec3(CoB * glm::vec4(Up, 0));
+        //Right = glm::vec3(CoB * glm::vec4(Right, 0));
+        //Position = glm::vec3(CoB * glm::vec4(Position, 1));
+      }
+      else {
+        //this is where one would implement collision
+      }
+    }
+  }
+}

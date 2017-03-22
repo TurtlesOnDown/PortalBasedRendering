@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 class Sector;
+class XPlane;
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
@@ -65,6 +66,8 @@ public:
     this->updateCameraVectors();
   }
 
+  Sector* getCurrentSector() { return currentSector; }
+  void setSector(Sector* s) { currentSector = s; }
   // Returns the view matrix calculated using Eular Angles and the LookAt Matrix
   glm::mat4 GetViewMatrix()
   {
@@ -83,6 +86,7 @@ public:
       this->Position -= this->Right * velocity;
     if (direction == RIGHT)
       this->Position += this->Right * velocity;
+    updateCurrentSector();
   }
 
   // Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
@@ -131,5 +135,9 @@ private:
     // Also re-calculate the Right and Up vector
     this->Right = glm::normalize(glm::cross(this->Front, this->WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
     this->Up = glm::normalize(glm::cross(this->Right, this->Front));
+  }
+  void updateCurrentSector();
+  glm::mat4 flip(glm::mat4&& toflip) {
+    return glm::mat4(toflip[0], toflip[1], -toflip[2], toflip[3]);
   }
 };
